@@ -22,16 +22,6 @@ namespace SoundLaunch
 
                 pad.OnButtonChange += (p, b) =>
                 {
-                    if (!(
-                        b.Event.Type == ButtonType.Toolbar &&
-                        b.Event.ToolbarButton == ToolbarButton.Mixer
-                        )
-                    )
-                    {
-                        var isMixerHeld = pad.IsButtonActive(ToolbarButton.Mixer);
-                        p.SetColor(b.Button, isMixerHeld ? ButtonColor.Red : ButtonColor.Green);
-                    }
-
                     if(b.Button.State == ButtonPressState.Down)
                     {
                         snd.PlayCue(b.ButtonId);
@@ -45,6 +35,21 @@ namespace SoundLaunch
                 pad.Start();
                 snd.BuildConfigFromDir("clips");
 
+                foreach(var s in snd.ActiveConfig.Sounds)
+                {
+                    foreach(var c in s.Cues)
+                    {
+                        var b = pad.GetButton(c.CueName);
+                        if(b != null)
+                        {
+                            var col = ButtonColor.Green;
+                            if (c.PitchFactor < 1.0f) col = ButtonColor.GreenLow;
+                            else if (c.PitchFactor > 1.0f) col = ButtonColor.GreenMid;
+                            if (s.Loop) col = ButtonColor.Red;
+                            pad.SetColor(b, col);
+                        }
+                    }
+                }
 
                 Console.ReadLine();
 

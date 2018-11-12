@@ -244,8 +244,39 @@ namespace SoundLaunch
         public LaunchpadButton GetButton(int x, int y)
         {
             if (!IsRunning) return null;
+            if (x > 7 || y > 7) return null;
 
             return _device[x,y];
+        }
+
+        public LaunchpadButton GetButton(string id)
+        {
+            if(id.StartsWith("Toolbar"))
+            {
+                var name = id.Substring("Toolbar(".Length);
+                name = name.Substring(0, name.Length - 1);
+                ToolbarButton button;
+                if (Enum.TryParse(name, true, out button)) return _device.GetButton(button);
+            }else if (id.StartsWith("Side"))
+            {
+                var name = id.Substring("Side(".Length);
+                name = name.Substring(0, name.Length - 1);
+                SideButton button;
+                if (Enum.TryParse(name, true, out button)) return _device.GetButton(button);
+
+            } else if (id.StartsWith("Grid"))
+            {
+                var xy = id.Substring("Side(".Length);
+                var xyArray = xy.Substring(0, xy.Length - 1).Split(',');
+
+                int x;
+                int y;
+                if(int.TryParse(xyArray[0],out x) && int.TryParse(xyArray[1], out y))
+                {
+                    return GetButton(x, y);
+                }
+            }
+            return null;
         }
 
         public IEnumerable<LaunchpadButton> GetButtons()
