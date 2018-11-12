@@ -1,6 +1,5 @@
 ﻿TODO:
 	- Add ability for sounds to play in their own thread so you can layer the same cue.
-	- Add ability to get launchpad button by ID so that Cues can be highlighted.
 	- Make side buttons build cues:
 		- Pitch shift
 		- Position skip
